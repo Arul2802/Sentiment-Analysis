@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Learning Model Prediction</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="w-full max-w-md p-6 bg-white rounded-2xl shadow-lg">
+        <h1 class="text-2xl font-bold text-center text-gray-800">Model Predictor</h1>
+        <p class="text-center text-gray-600 mt-2">Enter a value below to get a prediction!</p>
+        <form id="predict-form" class="mt-6">
+            <div class="mb-4">
+                <label for="input_value" class="block text-sm font-medium text-gray-700">Input Value</label>
+                <input type="number" id="input_value" name="input_value" step="any" required
+                       class="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
+            <button type="submit" class="w-full py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600">
+                Predict
+            </button>
+        </form>
+        <div id="result" class="mt-6 text-center text-lg font-semibold text-gray-700"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('predict-form');
+        const resultDiv = document.getElementById('result');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(form);
+            const response = await fetch('/predict', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            if (data.error) {
+                resultDiv.textContent = `Error: ${data.error}`;
+                resultDiv.classList.add('text-red-500');
+            } else {
+                resultDiv.textContent = `Prediction: ${data.prediction}`;
+                resultDiv.classList.remove('text-red-500');
+                resultDiv.classList.add('text-green-500');
+            }
+        });
+    </script>
+</body>
+</html>
